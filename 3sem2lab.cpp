@@ -4,7 +4,6 @@ int main()
 {
 	setlocale(0, "");
 
-
 	int length = 0;
 	getlength(length);
 	if (!length)
@@ -12,8 +11,6 @@ int main()
 		cout << "Длина массива 0. Завершение работы\n";
 		return 0;
 	}
-
-
 	
 	char* prim_text = new char[length];//изначальный массив
 	char* text = new char[length+1] {'\0'};//изменённый массив
