@@ -4,33 +4,38 @@ int main()
 {
 	setlocale(0, "");
 
+	char* text = nullptr;
 	int length = 0;
+
+	ofstream out;
+
 	getlength(length);
 	if (!length)
 	{
 		cout << "Длина массива 0. Завершение работы\n";
 		return 0;
 	}
-	
-	char* prim_text = new char[length];//изначальный массив
-	char* text = new char[length+1] {'\0'};//изменённый массив
-	gettext(prim_text, length);
+	cout << endl;
 
-	for (int i = 0; i < length; i++)
-		text[i] = prim_text[i];
+	text = new char[length] {'\0'}; // изменённый массив
+	gettext(text, length);
 
-	changetext(text, prim_text);
+	open_save_file(out);
+	cout << endl;
+	show(text, length, "Изначальный массив: ");
+	savetext(out, text, length, "Изначальный массив: ");
 
-	for (int i = 0; i < strlen(prim_text); i++)
-		cout << prim_text[i];
-	cout << " — изначальный массив\n";
-	for (int i = 0; i < strlen(text); i++)
-		cout << text[i];
-	cout << " — изменённый массив\n";
-	savetext(prim_text, text);
+  //sort(text, text + strlen(text), cmp);
+	sort_text(text, length);
+	cout << endl;
+	out << endl;
 
-	prim_text = NULL;//костыль
-	delete[] prim_text;
+	show(text, length, "Изменённый массив: ");
+	savetext(out, text, length, "Изменённый массив: ");
+	cout << endl;
+
+	out.close();
+
 	delete[] text; 
 
 	system("pause");

@@ -1,18 +1,32 @@
 #include "Header.h"
 
+int getnum() // проверка ввода
+{
+	int value;
+	while (!(cin >> value))
+	{ //Since value is a int, (cin >> value) will be true only if the user enters a valid value that can be put inside a int
+		cout << "Please enter a valid value:" << endl;
+		cin.clear();
+		cin.ignore(32767, '\n');
+	}
+	cin.ignore(32767, '\n');
+	return value;
+}
+
+
 void getlength(int& length) 
 {
-	cout << "¬ведите 0, если хотите ввести размерность массива считаванием с файла, иначе вручную: ";
+	cout << "¬ведите 0, если хотите ввести –ј«ћ≈–Ќќ—“№ массива считаванием с файла, иначе вручную: ";
 	int menu = getnum();
-	if (menu)//manual
+	if (menu) // manual
 	{
 		cout << "¬ведите размерность массива: ";
 		length = getnum();
 	}
-	else//file
+	else // file
 	{
 		cout << "¬ведите название файла, если он в директории программы, иначе введите путь к файлу: ";
-		string prim_file,line;
+		string prim_file, line;
 		while (true)
 		{
 			getline(cin, prim_file);
@@ -34,26 +48,30 @@ void getlength(int& length)
 			}
 			cin.seekg(0, ios::end);
 			cin.clear();
-			in.close();
-		}    // закрываем файл
+			in.close(); // закрываем файл
+		}   
 	}
 }
 
 void gettext(char *&text, int length)
 {
-	cout << "¬ведите 0, если хотите заполнить массив считаванием с файла, иначе вручную: ";
+	cout << "¬ведите 0, если хотите «јѕќЋЌ»“№ массив считаванием с файла, иначе вручную: ";
 	int menu = 1;
 	menu = getnum();
-	if (menu)//1 manual
+	if (menu) //1  manual
 	{
 		cout << "«аполните массив: ";
-		cin.getline(text, length + 1);
-		cin.clear();//если ввели больше length, то всЄ лишнее стираетс€
+		for (int i = 0; i < length; i++)
+		{
+			cin >> text[i];
+		}
+		// text[length] = '\0';
+		cin.clear(); // если ввели больше length, то всЄ лишнее стираетс€
 		cin.ignore(32767, '\n');
 	}
-	else//0 file
+	else // 0 file
 	{
-		cout << "\n¬ведите название файла, если он в директории программы, иначе введите путь к файлу: ";
+		cout << "¬ведите название файла, если он в директории программы, иначе введите путь к файлу: ";
 		string prim_file;
 		while (true)
 		{
@@ -62,8 +80,14 @@ void gettext(char *&text, int length)
 			in.open(prim_file); // окрываем файл дл€ чтени€
 			if (in.is_open())
 			{
-				in.getline(text, length + 1);
-				in.getline(text, length + 1);
+				string tmp;
+				getline(in, tmp, '\n');//считываем первую строку в файле, в которой хранитс€ размер массива
+              //getline(in, text, length + 1);//считываем след строку, в которой хранитс€ сам массив, при этом забыва€ предыдущую строку
+				for (int i = 0; i < length; i++)
+				{
+					in >> text[i];
+				}
+				//text[length] = '\0';
 				break;
 			}
 			else
@@ -75,51 +99,54 @@ void gettext(char *&text, int length)
 			}
 			cin.seekg(0, ios::end);
 			cin.clear();
-			in.close();
-		}    // закрываем файл
+			in.close(); // закрываем файл
+		}    
 	}
-}
-
-int getnum()//проверка ввода
-{
-	int value;
-	while (!(cin >> value))
-	{ //Since value is a int, (cin >> value) will be true only if the user enters a valid value that can be put inside a int
-		cout << "Please enter a valid value:" << endl;
-		cin.clear();
-		cin.ignore(32767, '\n');
-	}
-	cin.ignore(32767, '\n');
-	return value;
 }
 
 bool cmp(int first, int second) 
 {
-	return first > second;
+	return first < second;
 }
 
-void changetext(char*& text, char* prim_text)
+void sort_text(char* text, int length)
 {
-	cout << endl;
-	for (int i = 0; i < strlen(text); i++)
+	char temp;
+	for (int i = 0; i < length; i++)
 	{
-		sort(text, text+strlen(text), cmp);
+		for (int j = i + 1; j < length; j++)
+		{
+			if (cmp(text[i], text[j]))
+			{
+				temp = text[i];
+				text[i] = text[j];
+				text[j] = temp;
+			}
+		}
 	}
 }
 
-void savetext(char* prim_text, char* text)
+void show(char * text, int length, string message)
+{
+	cout << message << endl;
+	for (int i = 0; i < length; i++)
+	{
+		cout << text[i] << " ";
+	}
+	cout << endl;
+}
+
+void open_save_file(ofstream& out)
 {
 	cout << endl << "¬ведите название или путь к файлу, в котором хотите сохранить результат: ";
 	string final_file;
 	while (true)
 	{
 		getline(cin, final_file);
-		ofstream out;
+		cin.clear();
 		out.open(final_file); // окрываем файл дл€ записи
 		if (out.is_open())
 		{
-			out << prim_text << " Ч изначальный массив" << '\n' << text << " Ч изменЄнный массив";
-			cout << "\n–езультат сохранЄн" << endl << endl;
 			break;
 		}
 		else
@@ -127,9 +154,19 @@ void savetext(char* prim_text, char* text)
 			cout << "¬ы неправильно указали путь к файлу или/и не указали им€ файла. ”кажите путь и им€ файла заново" << endl;
 			cin.clear();
 			cin.ignore(32767, '\n');
+
 		}
 		cin.seekg(0, ios::end);
 		cin.clear();
-		out.close();// закрываем файл
 	}
+}
+
+void savetext(ofstream &out, char* text, int length, string message)
+{
+	out << message << endl;
+	for (int i = 0; i < length; i++)
+	{
+		out << text[i] << " ";
+	}
+	out << endl;
 }

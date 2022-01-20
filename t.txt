@@ -1,2 +1,2 @@
 4
-ABCD
+A B C D

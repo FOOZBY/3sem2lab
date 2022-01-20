@@ -3,11 +3,18 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+
 using namespace std;
+
+int getnum();
 
 void getlength(int& length);
 void gettext(char*& text, int length);
-int getnum();
-void changetext(char *& text, char* prim_text);
+
 bool cmp(int first, int second);
-void savetext(char* prim_text, char* text);
+void sort_text(char* text, int length);
+
+void show(char* text, int lenght, string message);
+
+void open_save_file(ofstream& out);
+void savetext(ofstream& out, char* text, int length, string message);
